@@ -1,0 +1,192 @@
+
+Discarded input sections
+
+ .comment       0x00000000       0x2e kernel.o
+ .note.GNU-stack
+                0x00000000        0x0 kernel.o
+ .eh_frame      0x00000000      0x2f4 kernel.o
+ .comment       0x00000000       0x2e gdt_c.o
+ .note.GNU-stack
+                0x00000000        0x0 gdt_c.o
+ .eh_frame      0x00000000       0x78 gdt_c.o
+ .comment       0x00000000       0x2e idt.o
+ .note.GNU-stack
+                0x00000000        0x0 idt.o
+ .eh_frame      0x00000000       0x58 idt.o
+ .comment       0x00000000       0x2e isr.o
+ .note.GNU-stack
+                0x00000000        0x0 isr.o
+ .eh_frame      0x00000000       0xd4 isr.o
+ .comment       0x00000000       0x2e user_c.o
+ .note.GNU-stack
+                0x00000000        0x0 user_c.o
+ .eh_frame      0x00000000       0x34 user_c.o
+ .comment       0x00000000       0x2e paging.o
+ .note.GNU-stack
+                0x00000000        0x0 paging.o
+ .eh_frame      0x00000000       0x58 paging.o
+ .comment       0x00000000       0x2e test_exception.o
+ .note.GNU-stack
+                0x00000000        0x0 test_exception.o
+ .eh_frame      0x00000000       0x38 test_exception.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x00001000                        . = 0x1000
+
+.text           0x00001000     0x1bbe
+ *(.text)
+ .text          0x00001000       0x10 kernel_entry.o
+                0x00001000                _start
+ .text          0x00001010     0x1334 kernel.o
+                0x000022f9                kernel_main
+ *fill*         0x00002344        0xc 
+ .text          0x00002350       0xb5 display.o
+                0x00002350                vga_mode13_enable
+ *fill*         0x00002405        0xb 
+ .text          0x00002410       0x25 gdt.o
+                0x00002410                gdt_flush
+                0x0000242d                tss_flush
+ .text          0x00002435      0x197 gdt_c.o
+                0x000024ba                gdt_init
+                0x000025b8                tss_get_tr
+ .text          0x000025cc      0x110 idt.o
+                0x00002636                idt_init
+ .text          0x000026dc      0x270 isr.o
+                0x000027e7                syscall_handler
+                0x00002854                isr_handler
+ *fill*         0x0000294c        0x4 
+ .text          0x00002950       0xf9 interrupts.o
+                0x00002950                idt_flush
+                0x00002958                isr0
+                0x00002961                isr1
+                0x0000296a                isr2
+                0x00002973                isr3
+                0x0000297c                isr4
+                0x00002985                isr5
+                0x0000298e                isr6
+                0x00002997                isr7
+                0x000029a0                isr8
+                0x000029a4                isr9
+                0x000029aa                isr10
+                0x000029ae                isr11
+                0x000029b2                isr12
+                0x000029b6                isr13
+                0x000029ba                isr14
+                0x000029be                isr15
+                0x000029c4                isr16
+                0x000029ca                isr17
+                0x000029ce                isr18
+                0x000029d4                isr19
+                0x000029da                isr20
+                0x000029e0                isr21
+                0x000029e6                isr22
+                0x000029ec                isr23
+                0x000029f2                isr24
+                0x000029f8                isr25
+                0x000029fe                isr26
+                0x00002a04                isr27
+                0x00002a0a                isr28
+                0x00002a10                isr29
+                0x00002a16                isr30
+                0x00002a1c                isr31
+ *fill*         0x00002a49        0x7 
+ .text          0x00002a50       0x5f user.o
+                0x00002a50                enter_user_mode
+                0x00002a6e                syscall_stub
+ .text          0x00002aaf        0x0 user_c.o
+ .text          0x00002aaf       0xfe paging.o
+                0x00002aaf                paging_init
+                0x00002b96                paging_enabled
+ .text          0x00002bad       0x11 test_exception.o
+                0x00002bad                test_divide_by_zero
+ *(.text.*)
+
+.iplt           0x00002bbe        0x0
+ .iplt          0x00002bbe        0x0 kernel_entry.o
+
+.usertext       0x00003000     0x1000
+                0x00003000                        __user_text_start = .
+ *(.usertext)
+ .usertext      0x00003000        0x7 user.o
+                0x00003000                user_entry
+ .usertext      0x00003007       0x17 user_c.o
+                0x00003007                user_main
+                0x00004000                        . = ALIGN (0x1000)
+ *fill*         0x0000301e      0xfe2 
+                0x00004000                        __user_text_end = .
+                0x00000001                        ASSERT (((__user_text_end - __user_text_start) == 0x1000), User code section must occupy exactly one page)
+
+.rodata         0x00004000      0x798
+ *(.rodata)
+ .rodata        0x00004000      0x580 kernel.o
+ .rodata        0x00004580       0x3b display.o
+ *fill*         0x000045bb        0x1 
+ .rodata        0x000045bc      0x159 isr.o
+ *fill*         0x00004715        0x3 
+ .rodata        0x00004718       0x80 interrupts.o
+                0x00004718                isr_stub_table
+ *(.rodata.*)
+
+.rel.dyn        0x00004798        0x0
+ .rel.got       0x00004798        0x0 kernel_entry.o
+ .rel.iplt      0x00004798        0x0 kernel_entry.o
+ .rel.text      0x00004798        0x0 kernel_entry.o
+
+.data           0x00004798       0x1c
+ *(.data)
+ .data          0x00004798       0x1c kernel.o
+ .data          0x000047b4        0x0 gdt_c.o
+ .data          0x000047b4        0x0 idt.o
+ .data          0x000047b4        0x0 isr.o
+ .data          0x000047b4        0x0 user_c.o
+ .data          0x000047b4        0x0 paging.o
+ .data          0x000047b4        0x0 test_exception.o
+ *(.data.*)
+
+.got            0x000047b4        0x0
+ .got           0x000047b4        0x0 kernel_entry.o
+
+.got.plt        0x000047b4        0x0
+ .got.plt       0x000047b4        0x0 kernel_entry.o
+
+.igot.plt       0x000047b4        0x0
+ .igot.plt      0x000047b4        0x0 kernel_entry.o
+
+.bss            0x00005000    0x19000
+ *(COMMON)
+ *(.bss)
+ .bss           0x00005000     0xfa0c kernel.o
+ *fill*         0x00014a0c       0x14 
+ .bss           0x00014a20     0x40b0 gdt_c.o
+ *fill*         0x00018ad0       0x10 
+ .bss           0x00018ae0      0x806 idt.o
+ .bss           0x000192e6        0x0 isr.o
+ .bss           0x000192e6        0x0 user_c.o
+ *fill*         0x000192e6      0xd1a 
+ .bss           0x0001a000     0x4000 paging.o
+ .bss           0x0001e000        0x0 test_exception.o
+ *(.bss.*)
+
+/DISCARD/
+ *(.comment)
+ *(.note*)
+ *(.eh_frame*)
+LOAD kernel_entry.o
+LOAD kernel.o
+LOAD display.o
+LOAD gdt.o
+LOAD gdt_c.o
+LOAD idt.o
+LOAD isr.o
+LOAD interrupts.o
+LOAD user.o
+LOAD user_c.o
+LOAD paging.o
+LOAD test_exception.o
+OUTPUT(kernel.elf elf32-i386)
